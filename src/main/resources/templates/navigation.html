@@ -43,6 +43,8 @@
                         </ul>
                     </li>
                     <li th:if="${session.user == null}">    <!--如果session没有user 就连接到登陆页面，并且显示“登录”-->
+                        <span th:href="@{https://github.com/login/oauth/authorize(client_id='84653d3ce81ad7b7992c',redirect_uri=${#httpServletRequest.getServletContext().getAttribute('redirectUri')},scope='user',state=1)}"></span>
+                        <span th:href="@{https://github.com/login/oauth/authorize(client_id='84653d3ce81ad7b7992c',redirect_uri=${#httpServletRequest.getRequestURL()+'callback'},scope='user',state=1)}"></span>
                         <a href="https://github.com/login/oauth/authorize?client_id=84653d3ce81ad7b7992c&redirect_uri=http://localhost:8080/callback&scope=user&state=1">登录</a>
                     </li>
                 </ul>
