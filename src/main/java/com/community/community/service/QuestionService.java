@@ -26,23 +26,38 @@ public class QuestionService {
     @Autowired(required = false)
     private UserMapper userMapper;
 
-    public PaginationDTO list(String search, Integer page, Integer size) {
+    public PaginationDTO list(String search, String tag, Integer page, Integer size) {
 
         if (StringUtils.isNotBlank(search)) {
             String[] tags = StringUtils.split(search, " ");
             search = Arrays.stream(tags).collect(Collectors.joining("|"));
         }
 
+
         PaginationDTO paginationDTO = new PaginationDTO();
         QuestionQueryDTO questionQueryDTO = new QuestionQueryDTO();
         Integer totalCount;
         if (search == null) {
-            totalCount = questionMapper.count();
+            if (tag == null) {
+                totalCount = questionMapper.count();
+            }
+            else {
+                questionQueryDTO.setTag(tag);
+                totalCount = (int) questionMapper.countByTag(questionQueryDTO);
+            }
         }
         else {
-            questionQueryDTO.setSearch(search);
-            totalCount = (int) questionMapper.countBySearch(questionQueryDTO);
+            if (tag == null) {
+                questionQueryDTO.setSearch(search);
+                totalCount = (int) questionMapper.countBySearch(questionQueryDTO);
+            }
+            else {
+                questionQueryDTO.setTag(tag);
+                questionQueryDTO.setSearch(search);
+                totalCount = (int) questionMapper.countBySearchAndTag(questionQueryDTO);
+            }
         }
+
 
         Integer totalPage;
         if (totalCount % size == 0) {   //totalCount是数据库有多少条数据，totalPage是数据库里的数据应该分多少页
@@ -63,12 +78,26 @@ public class QuestionService {
         Integer offset = size * (page - 1);
         List<Question> questions;
         if (search == null) {
-            questions = questionMapper.list(offset, size);
+            if (tag == null) {
+                questions = questionMapper.list(offset, size);
+            }
+            else {
+                questionQueryDTO.setSize(size);
+                questionQueryDTO.setPage(offset);
+                questions = questionMapper.selectByTag(questionQueryDTO);
+            }
         }
         else {
-            questionQueryDTO.setSize(size);
-            questionQueryDTO.setPage(offset);
-            questions = questionMapper.selectBySearch(questionQueryDTO);
+            if (tag == null) {
+                questionQueryDTO.setSize(size);
+                questionQueryDTO.setPage(offset);
+                questions = questionMapper.selectBySearch(questionQueryDTO);
+            }
+            else {
+                questionQueryDTO.setSize(size);
+                questionQueryDTO.setPage(offset);
+                questions = questionMapper.selectBySearchAndTag(questionQueryDTO);
+            }
         }
         List<QuestionDTO> questionDTOList = new ArrayList<>();
 

@@ -18,7 +18,7 @@ public class HotTagCache {
     构建按照priority的小顶堆，然后维持里边的元素只有3个，最后一个个poll出来加在list的头部，就是从大到小了。这样找出了topN
      */
     public void updateTags(Map<String, Integer> tags) {
-        int max = 3;
+        int max = 6;
         PriorityQueue<HotTagDTO> priorityQueue = new PriorityQueue<>(max, (a, b) -> (a.getPriority() - b.getPriority()));
 
         tags.forEach((name, priority) -> {

@@ -44,4 +44,18 @@ public interface QuestionMapper {
 
     @Select("select * from question where lower(title) regexp lower(#{search}) limit #{page}, #{size}")
     List<Question> selectBySearch(QuestionQueryDTO questionQueryDTO);
+
+    @Select("select count(*) from question where lower(tag) regexp lower(#{tag})")
+    Integer countByTag(QuestionQueryDTO questionQueryDTO);
+
+    @Select("select * from question where lower(tag) regexp lower(#{tag}) limit #{page}, #{size}")
+    List<Question> selectByTag(QuestionQueryDTO questionQueryDTO);
+
+    @Select("select count(*) from question where lower(title) regexp lower(#{search}) and lower(tag) regexp lower(#{tag})")
+    Integer countBySearchAndTag(QuestionQueryDTO questionQueryDTO);
+
+    @Select("select * from question where lower(title) regexp lower(#{search}) and lower(tag) regexp lower(#{tag}) limit #{page}, #{size}")
+    List<Question> selectBySearchAndTag(QuestionQueryDTO questionQueryDTO);
+
+
 }
